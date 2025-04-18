@@ -1,205 +1,103 @@
-"use client";
+"use client"; // Important si tu utilises useState
 
 import Link from "next/link";
+import Image from "next/image"; // Si tu utilises un logo image
 import { useState } from "react";
-import { ChevronDown, Menu, X, Moon, Sun } from "lucide-react";
-import Image from "next/image";
+import { Menu, X } from "lucide-react"; // Icônes pour le menu mobile
 
 const Header = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(true);
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle("dark");
-  };
-
-  const toggleSubmenu = (submenu: string) => {
-    setActiveSubmenu(activeSubmenu === submenu ? null : submenu);
-  };
-
-  const navigation = [
-    {
-      name: "Services",
-      href: "#",
-      hasSubmenu: true,
-      submenu: [
-        { name: "Pourquoi MacroLab", href: "/#why-macrolab" },
-        { name: "Abonnements", href: "/#memberships" },
-      ],
-    },
-    {
-      name: "À Propos",
-      href: "#",
-      hasSubmenu: true,
-      submenu: [
-        { name: "À Propos de MacroLab", href: "/#why-macrolab" },
-        { name: "Notre Équipe",href: "/team" },
-        { name: "Youtube", href: "https://www.youtube.com/@MacroLab-Investment" },
-      ],
-    },
-    {
-      name: "Recherche",
-      href: "#",
-      hasSubmenu: true,
-      submenu: [
-        { name: "Le Rapport Macro", href: "/#memberships" },
-        { name: "YouTube", href: "https://www.youtube.com/@MacroLab-Investment" },
-      ],
-    },
-  ];
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header id="masthead" className="py-4 border-b border-border/30 sticky top-0 z-50 backdrop-blur bg-background/90">
-      <div className="container">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <div className="header-logo">
-            <Link href="/" className="flex items-center">
-            <img src="/images/logowb.png" alt="Logo MacroLab" className="h-12 w-auto" />
-              <div className="text-xl font-bold text-white mr-2">MacroLab</div>
-            </Link>
-          </div>
-  
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex">
-            <ul className="flex items-center space-x-6">
-            {navigation.map((item) => (
-  <li key={item.name} className="relative group pb-4"> {/* <-- MODIFICATION ICI: ajout de pb-4 */}
-    {item.hasSubmenu ? (
-      <span className="flex items-center text-foreground/90 hover:text-foreground cursor-pointer pt-3">
-        {item.name}
-        <ChevronDown className="ml-1 h-4 w-4" />
-      </span>
-    ) : (
-      <Link
-        href={item.href}
-        className="text-foreground/90 hover:text-foreground"
-      >
-        {item.name}
-      </Link>
-    )}
-
-    {item.hasSubmenu && (
-      <div className="absolute left-0 mt-2 w-56 rounded-md bg-card shadow-lg ring-1 ring-black/5 hidden group-hover:block z-50">
-        <div className="py-1">
-          {item.submenu?.map((subItem) => (
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 items-center"> {/* Hauteur standard h-14 */}
+        <div className="mr-4 hidden md:flex"> {/* Logo et Nav principale pour Desktop */}
+          <Link href="/" className="mr-6 flex items-center space-x-2">
+            {/* Remplace par ton logo si nécessaire */}
+            {/* <Image src="/logo.png" width={30} height={30} alt="MacroLab Logo" /> */}
+            <span className="hidden font-bold sm:inline-block">
+              MacroLab
+            </span>
+          </Link>
+          <nav className="flex items-center space-x-6 text-sm font-medium">
             <Link
-              key={subItem.name}
-              href={subItem.href}
-              className="block px-4 py-2 text-sm text-foreground hover:bg-accent/50"
+              href="/#why-macrolab"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
             >
-              {subItem.name}
+              Pourquoi nous ?
             </Link>
-          ))}
-        </div>
-      </div>
-    )}
-  </li>
-              ))}
-            </ul>
+            <Link
+              href="/#market-calls"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Trades
+            </Link>
+            <Link
+              href="/#our-products"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              Produits
+            </Link>
+            <Link
+              href="/#about"
+              className="transition-colors hover:text-foreground/80 text-foreground/60"
+            >
+              À Propos
+            </Link>
           </nav>
-  
-          {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
-            <Link href="/#memberships" className="hidden sm:block button">
+        </div>
+
+        {/* Bouton Menu Mobile */}
+        <button
+          className="inline-flex items-center justify-center rounded-md p-2 text-foreground/60 hover:text-foreground/80 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary md:hidden"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          <span className="sr-only">Ouvrir le menu principal</span>
+          {isMobileMenuOpen ? (
+            <X className="block h-6 w-6" aria-hidden="true" />
+          ) : (
+            <Menu className="block h-6 w-6" aria-hidden="true" />
+          )}
+        </button>
+
+        {/* Bouton S'abonner (visible sur tous les écrans, à droite) */}
+        <div className="flex flex-1 items-center justify-end space-x-4">
+          <nav className="flex items-center">
+            {/* --- BOUTON CORRIGÉ --- */}
+            <Link
+              href="/#memberships" // Ou la page/URL d'abonnement
+              // text-sm (plus grand), px-5 py-2 (plus de padding)
+              className="button text-sm px-5 py-2"
+            >
               S'abonner
             </Link>
-  
-            <button
-              className="h-8 w-8 flex items-center justify-center rounded-md"
-              onClick={toggleDarkMode}
-            >
-              {isDarkMode ? (
-                <Sun className="h-4 w-4 text-foreground" />
-              ) : (
-                <Moon className="h-4 w-4 text-foreground" />
-              )}
-            </button>
-  
-           
-  
-            {/* Mobile menu button */}
-            <button
-              type="button"
-              className="lg:hidden rounded-md p-2 text-foreground"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              <span className="sr-only">Ouvrir le menu principal</span>
-              {mobileMenuOpen ? (
-                <X className="h-6 w-6" aria-hidden="true" />
-              ) : (
-                <Menu className="h-6 w-6" aria-hidden="true" />
-              )}
-            </button>
-          </div>
+            {/* --- FIN BOUTON CORRIGÉ --- */}
+          </nav>
         </div>
       </div>
-  
-      {/* Mobile menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden">
-          <div className="container py-4">
-            <nav className="flex flex-col space-y-4">
-              {navigation.map((item) => (
-                <div key={item.name}>
-                  {item.hasSubmenu ? (
-                    <div>
-                      <button
-                        onClick={() => toggleSubmenu(item.name)}
-                        className="flex justify-between w-full text-lg font-medium text-foreground"
-                      >
-                        {item.name}
-                        <ChevronDown
-                          className={`h-5 w-5 transform transition-transform ${
-                            activeSubmenu === item.name ? 'rotate-180' : ''
-                          }`}
-                        />
-                      </button>
-  
-                      {activeSubmenu === item.name && (
-                        <div className="mt-2 ml-4 space-y-2 border-l border-border/50 pl-4">
-                          {item.submenu?.map((subItem) => (
-                            <Link
-                              key={subItem.name}
-                              href={subItem.href}
-                              className="block py-1.5 text-foreground/80 hover:text-foreground"
-                              onClick={() => setMobileMenuOpen(false)}
-                            >
-                              {subItem.name}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <Link
-                      href={item.href}
-                      className="block text-lg font-medium text-foreground"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      {item.name}
-                    </Link>
-                  )}
-                </div>
-              ))}
-  
-              
-  
-              <Link
-                href="/#memberships"
-                className="button w-full justify-center"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                S'abonner
-              </Link>
-            </nav>
+
+      {/* Menu déroulant Mobile */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden absolute top-full left-0 w-full bg-background border-b border-border/40 shadow-lg">
+          <div className="space-y-1 px-2 pb-3 pt-2">
+             {/* Répète tes liens de navigation ici pour le mobile */}
+            <Link href="/#why-macrolab" className="block rounded-md px-3 py-2 text-base font-medium text-foreground/80 hover:bg-accent hover:text-accent-foreground" onClick={() => setIsMobileMenuOpen(false)}>
+               Pourquoi nous ?
+            </Link>
+             <Link href="/#market-calls" className="block rounded-md px-3 py-2 text-base font-medium text-foreground/80 hover:bg-accent hover:text-accent-foreground" onClick={() => setIsMobileMenuOpen(false)}>
+               Trades
+             </Link>
+             <Link href="/#our-products" className="block rounded-md px-3 py-2 text-base font-medium text-foreground/80 hover:bg-accent hover:text-accent-foreground" onClick={() => setIsMobileMenuOpen(false)}>
+               Produits
+             </Link>
+             <Link href="/#about" className="block rounded-md px-3 py-2 text-base font-medium text-foreground/80 hover:bg-accent hover:text-accent-foreground" onClick={() => setIsMobileMenuOpen(false)}>
+               À Propos
+             </Link>
           </div>
         </div>
       )}
     </header>
   );
-};  
+};
 
 export default Header;
